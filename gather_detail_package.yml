@@ -1,0 +1,56 @@
+- hosts: all
+  gather_facts: yes
+  tasks:
+    - block:
+
+       - name: Check the apache version - Installed
+         shell: apt-cache policy apache2 | grep Installed | awk '{print $2}'
+         register: apache_version_i
+
+       - name: Check the apache version - Candidate
+         shell: apt-cache policy apache2 | grep Candidate | awk '{print $2}'
+         register: apache_version_c
+
+       - name: Check the openssl version - Installed
+         shell: apt-cache policy openssl | grep Installed | awk '{print $2}'
+         register: openssl_version_i
+
+       - name: Check the openssl version - Candidate
+         shell: apt-cache policy openssl | grep Candidate | awk '{print $2}'
+         register: openssl_version_c
+#
+#       - name: get NmsServer_LastPostUpgrade
+#         shell: eval `camp-db-params -e`;psql -At -c "select sstringvalue from xtkoption where sname='NmsServer_LastPostUpgrade';"
+#         register: lastpostupgrade
+#         ignore_unreachable: true
+#         become: yes
+#
+#       - name: find log4j file
+#         shell: find / -iname log4j*.jar
+#         register: log4
+#         become: yes
+#         ignore_errors: yes
+#
+#       - name: find postfix verion
+#         shell: postconf -d | grep mail_version | head -1 | awk -F'=' '{print $2}'
+#         register: postfix
+#         become: yes
+#         ignore_errors: yes
+
+#       - name: find apache tomcat cataline.jar file
+#         shell: find /usr/local/neolane/ -iname catalina.jar
+#         ignore_errors: yes
+#         become: yes
+#         register: cataline
+#
+#       - name: find apache tomcat verion
+#         shell: java -cp {{ cataline.stdout }} org.apache.catalina.util.ServerInfo | grep 'Server number:' |awk -F' ' '{print $3}'
+#         register: server
+#         ignore_errors: yes
+#         become: yes
+         
+       - name: save the openssl installed & candidate verion in openssl_version.txt
+         shell: echo '{{ inventory_hostname }}:{{ openssl_version_i.stdout }}:{{ openssl_version_c.stdout }}:{{ apache_version_i.stdout }}:{{ apache_version_c.stdout }}:{{ ansible_distribution_version }}' >> /tmp/get_package_details.csv
+         delegate_to: localhost
+         #         become: yes
+         ignore_errors: true
