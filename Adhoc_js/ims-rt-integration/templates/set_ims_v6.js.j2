@@ -1,0 +1,41 @@
+#jinja2:lstrip_blocks:True
+var query = {
+ queryDef: {
+   schema: "nms:extAccount",
+   operation: "select",
+   select: { node: [{expr: "@name"}]},
+   where: {condition: [{expr: "@type = 13"}]}
+ }
+};
+
+var res = NLWS.xtkQueryDef.create(query).ExecuteQuery().getElementsByTagName("extAccount");
+
+if (res.length != 1) {
+    logError("zero or multiple external accounts found for IMS integration!")
+}
+
+var extAcountName = res[0].$name
+var xtkSecretKey = sqlGetString("select sstringvalue from xtkoption where sname='XtkSecretKey'");
+var cryptSecret = cryptString("{{ ims.client.secret }}", xtkSecretKey)
+xtk.session.Write
+(
+    {
+        "extAccount": {
+                "name": extAcountName,
+                "active": "true",
+                "xtkschema": "nms:extAccount",
+                "type": 13,
+                "imsOrgId": "{{ orgId }}",
+                "imsRightsMask": "{{ associationMask }}",
+                "clientId": "{{ ims.client.id }}",
+                "clientSecret": cryptSecret,
+                "imsServer": "https://adobeid-na1.services.adobe.com",
+                "callbackServer": "https://{{ serverUrl }}",
+                {% if product_context is defined %}
+                "productContext": "{{ product_context }}",
+                {% endif %}
+                "tenant": "{{ tenant }}",
+                "server": "https://marketing.adobe.com"
+        }
+    }
+)

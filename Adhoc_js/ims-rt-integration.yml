@@ -1,0 +1,8 @@
+#ansible-playbook -i richaops-mkt-prod32-1,richaops-mkt-stage31-1,  vault-integration-acc.yml  -u admin
+---
+
+- hosts: all
+  gather_facts: false
+  become: true
+  roles:
+      - ims-rt-integration

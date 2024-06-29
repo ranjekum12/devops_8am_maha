@@ -1,0 +1,114 @@
+- name: Get nlserver or AC package info
+  become: true
+  package_facts:
+    manager: auto
+  register: package_info
+
+- set_fact:
+    acc: "{{ acc | default('v7') }}"  # Default value if none of the conditions are met
+
+- set_fact:
+    acc: "v7"  
+  when:
+    - package_info.ansible_facts.packages | intersect(['nlserver6', 'nlserver6-v7', 'nlserver7']) | length > 0
+
+- set_fact:
+    acc: "v8"
+  when:
+    - "'ac' in package_info.ansible_facts.packages"
+    - "'nlserver6' not in package_info.ansible_facts.packages and 'nlserver6-v7' not in package_info.ansible_facts.packages and 'nlserver7' not in package_info.ansible_facts.packages"
+
+- block:
+    - name: Verify nlserver V8 build version
+      shell: dpkg -l | egrep '^[hi]{1}i' | grep -w 'ac'| awk '{print $3}' 
+      register: nlserver_version
+      failed_when: nlserver_version.stdout is version('8.7.0', operator='lt', strict=True)
+
+    - name: Verify nlserver V8 build version
+      fail:
+        msg: "{{ ansible_hostname }} failed validation."
+      when: ( nlserver_version.stdout is version('8.7.0', operator='lt', strict=True))
+      delegate_to: 127.0.0.1
+      become: false
+  when: acc == 'v8'
+
+- block:
+    - name: Campaign Web Service Availaibility Check
+      shell: /usr/local/sbin/check_nl_web.py
+      register: nlweb_out
+      ignore_errors: yes
+      
+    - name: Verify Web services before rollout
+      fail:
+        msg: "{{ instance_name }} failed validation."
+      when: '"MISSING" in nlweb_out.stdout or "stuck" in nlweb_out.stdout'
+      delegate_to: 127.0.0.1
+      become: false
+  when: ansible_distribution_release == 'stretch'
+
+- name: Check camp-db-params status
+  shell: camp-db-params
+  become: yes
+  register: camp
+  failed_when: camp.rc != 0
+
+- name: check psql connectivity
+  shell: |
+    eval `camp-db-params -e`
+    psql -c 'select version();'
+  become: yes
+
+- name: check if 'mc' user present in db
+  shell: |
+    eval `camp-db-params -e`
+    psql -tc "select count(*) from xtkoperator where sname='mc';"
+  become: yes
+  register: psql_result
+
+- name: Fail task if row count is zero
+  fail:
+    msg: "Row count for mc in xtkoperator is zero"
+  when: psql_result.stdout|int == 0
+
+- name: check if 'nmsextaccount' for macIntegration is already present
+  shell: |
+    eval `camp-db-params -e`
+    psql -tc "select count(*) from nmsextaccount where itype=13 AND sclientsecret is not null AND simsorgid is not null AND simsrightsmask is not null AND simsserver is not null AND sproductcontext is not null AND stenant is not null;"
+  become: yes
+  register: psql_nmsextaccount_result
+
+- name: Fail task if row count for nmsextaccount is more than zero
+  fail:
+    msg: "Row count for nmsextaccount is more than zero"
+  when: psql_nmsextaccount_result.stdout|int > 0
+
+- name: Check "imsconfig" element exists in config instance file
+  shell: |
+    grep -i "imsconfig" /usr/local/neolane/nl{{ nlversion }}/conf/config-{{ instance_name }}.xml
+  register: imsconfig_in_config
+  failed_when: imsconfig_in_config.rc == 0
+
+- name: Running Nlserver config reload
+  shell: /etc/init.d/nlserver{{ nlversion }} config -reload
+
+- block:
+    - name: Make sure that all campaign services are up, along with apache and tomcat
+      shell:  cd /var/db/newrelic-infra/custom-integrations; python3 /etc/newrelic-infra/custom-integrations/bin/processmon/hyp_procmon.py --neolane-dir /usr/local/neolane/nl{{ nlversion }} | grep -v HyperionProcessSample
+      register: processmonitor_status 
+
+    - name: Extract the service status from the JSON output
+      shell: echo "{{ (processmonitor_status.stdout | from_json | json_query('data[*].metrics[*].isRunning')) }}"
+      register: service_stat
+
+    - name: Extract the service name from the JSON output
+      shell: echo "{{ (processmonitor_status.stdout | from_json | json_query('data[*].metrics[*].processName')) }}"
+      register: service_name
+
+    - name: Show the processmonitor result
+      debug:
+        msg: " '{{ service_name.stdout_lines }}' = '{{ service_stat.stdout_lines }}' "
+      failed_when: service_stat.stdout_lines is search("False") 
+  when: ansible_lsb.codename == 'bullseye'
+
+- include: login_monitor_check.yml
+  when: ansible_lsb.codename == 'bullseye'

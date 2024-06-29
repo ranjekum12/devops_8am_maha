@@ -1,0 +1,239 @@
+
+function evaluateOtherSecret(password){
+if(decryptPassword(password)==''){
+	logInfo("Returned Empty String using decryptPassword method");
+
+	if(decryptString(password)==''){
+		logInfo("Returned Empty String using decryptString method also");
+		return 0;
+	}
+	else{
+		logInfo("successfully decrypted using decryptString");
+		return -1;
+	}
+}
+else 
+	return 1;
+				
+
+}
+function fetchOtherSecrets() {
+logInfo("Evaluating external accounts....................");
+  var queryDoc = DOMDocument.fromJXON({queryDef: {schema: "nms:extAccount", operation: "select", 
+  select: {
+    node: [
+      {expr: "@name"}, 
+      {expr: "@password"}, 
+      {expr: "@clientSecret"},
+ 	  {expr: "@awsSecret"},
+      {expr: "@sharedSecret"}]
+    }
+}})
+if( application.hasPackage("nms:social") ) {
+  var newNode = queryDoc.createElement("node");
+  newNode.$expr = "[params/oauthParams/@consumerSecret]"
+  queryDoc.root.getFirstElement("select").appendChild(newNode);
+}
+if( application.hasPackage("nms:line") || application.hasPackage("nms:lineV2") ) {
+  var newNode = queryDoc.createElement("node");
+  newNode.$expr = "[lineParams/@channelSecret]"
+  queryDoc.root.getFirstElement("select").appendChild(newNode);
+}
+var extAccountsDoc = NLWS.xtkQueryDef.create(queryDoc).ExecuteQuery()
+var extAccounts = extAccountsDoc.getElementsByTagName("extAccount")
+for each (var e in extAccounts) {
+//	logInfo(e.$password + "iashi"+  e.$clientSecret+"iashi2"+ e.$awsSecret+ "iashi3"+ e.$sharedSecret);
+  if( e.$password != "" )
+  {
+    if(evaluateOtherSecret(e.$password) != 1){
+    	logInfo("Issue with password");
+    }
+    
+  }
+  if( e.$clientSecret!= "" )
+  {
+    if(evaluateOtherSecret(e.$clientSecret) != 1){
+    	logInfo("Issue with clientSecret");
+    }
+
+  }
+if( e.$awsSecret!= "" )
+  {
+    if(evaluateOtherSecret(e.$awsSecret) != 1){
+    logInfo("Issue with aws secret");
+    }
+
+  }
+  if( e.$sharedSecret!= "" )
+  {
+    if(evaluateOtherSecret(e.$sharedSecret) != 1){
+    	logInfo("Issue with shared secret");
+    }
+
+  }
+
+  if( e.getFirstElement("params") && 
+      e.getFirstElement("params").getFirstElement("oauthParams") && 
+      e.getFirstElement("params").getFirstElement("oauthParams").$consumerSecret != "" )
+  {
+     if(evaluateOtherSecret(e.getFirstElement("params").getFirstElement("oauthParams").$consumerSecret) != 1){
+    	logInfo("Issue with consumer secret");
+    }
+    
+  }
+  if( e.getFirstElement("lineParams") && 
+      e.getFirstElement("lineParams").$channelSecret != "" )
+  {
+     if(evaluateOtherSecret(e.getFirstElement("lineParams").$channelSecret) != 1){
+    	logInfo("Issue with channel secret");
+    }
+    
+  }
+
+}
+
+logInfo("evaluating nms service accounts....................");
+if( application.hasPackage("nms:social") )
+{
+  // process services
+  var servicesDoc = NLWS.xtkQueryDef.create(
+  {queryDef: {schema: "nms:service", operation: "select", 
+    select: {
+      node: [
+        {expr: "@name"}, 
+        {expr: "[social/@consumerSecret]"}, 
+        {expr: "[social/@accessTokenSecret]"}
+        ]
+      },
+    where: {
+      condition: 
+        {expr: "[social/@consumerSecret] IS NOT NULL or [social/@accessTokenSecret] IS NOT NULL"}
+      }
+  }}).ExecuteQuery()
+  var services = servicesDoc.getElementsByTagName("service")
+  for each (var service in services) 
+  {
+   
+    if( service.getFirstElement("social") && 
+        service.getFirstElement("social").$consumerSecret != "" ){
+
+    	if(evaluateOtherSecret(service.getFirstElement("social").$consumerSecret) != 1){
+    	logInfo("Issue with social consumer secret");
+    }
+    }
+      
+    if( service.getFirstElement("social") && 
+       service.getFirstElement("social").$accessTokenSecret != "" ){
+
+    	if( evaluateOtherSecret(service.getFirstElement("social").$accessTokenSecret) != 1){
+    	logInfo("Issue with social accessTokenSecret");
+    }
+    }
+       
+  }
+}
+
+logInfo("evaluating workflow....................");
+  if( application.hasPackage("nms:federatedDataAccess") || 
+    application.hasPackage("nms:midEmitter") ||
+    application.hasPackage("nms:messageCenterControl") )
+{
+  var workflowsDoc = NLWS.xtkQueryDef.create(
+  {queryDef: {schema: "xtk:workflow", operation: "select", 
+    select: {
+      node: [
+        {expr: "@internalName"}, 
+        {expr: "[activities/dbImport/dataSourceDesc/@password]"},
+        {expr: "[activities/dbImport/@name]"}
+        ]
+      }
+  }}).ExecuteQuery()
+  var workflows = workflowsDoc.getElementsByTagName("workflow")
+
+   for each (var workflow in workflows) 
+  {
+    
+    if( workflow.getFirstElement("activities") ) 
+    { 
+      var dbImports = workflow.getFirstElement("activities").getElementsByTagName("dbImport");
+      for each (var dbImport in dbImports)
+      {
+        if( dbImport.getFirstElement("dataSourceDesc") && 
+            dbImport.getFirstElement("dataSourceDesc").$password != "" ){
+if(  evaluateOtherSecret(dbImport.getFirstElement("dataSourceDesc").$password) != 1){
+    	logInfo("Issue with dataSourceDesc password");
+    }
+
+        }
+           
+      }
+    }
+  }
+ }
+logInfo("evaluating operator accounts....................");
+
+if( application.hasPackage("nms:midReceiver") )
+{
+  var operatorsDoc = NLWS.xtkQueryDef.create(
+  {queryDef: {schema: "xtk:operator", operation: "select", 
+    select: {
+      node: [
+        {expr: "@name"}, 
+        {expr: "@type"}, 
+        {expr: "[tracking/@password]"},
+        {expr: "[imagePublishing/@mediaPwd]"}
+        ]
+    },
+    where: {
+      condition: 
+        {expr: "@type = 0"}
+      }
+  }}).ExecuteQuery()
+  
+  var operators = operatorsDoc.getElementsByTagName("operator")
+
+ for each (var operator in operators) 
+  {
+    if( operator.getFirstElement("tracking") && 
+        operator.getFirstElement("tracking").$password != "" ){
+if( evaluateOtherSecret(operator.getFirstElement("tracking").$password) != 1){
+    	logInfo("Issue with operator tracking password");
+    }
+
+    } 
+      
+    if( operator.getFirstElement("imagePublishing") && 
+        operator.getFirstElement("imagePublishing").$mediaPwd != "" ) {
+if( evaluateOtherSecret(operator.getFirstElement("imagePublishing").$mediaPwd) != 1){
+    	logInfo("Issue with imagePublishing media pwd");
+    }
+
+    }
+     
+  }
+
+}
+
+var value=getOption("XtkLdap_AppPassword");
+
+if(value!=null && value!=""){
+	if(evaluateOtherSecret(value)!=1){
+		logInfo("issue with XtkLdap_AppPassword");
+
+	}
+}
+value=getOption("NmsTracking_Password");
+if(value!=null && value!=""){
+	if(evaluateOtherSecret(value)!=1){
+		logInfo("Issue with nms tracking password");
+	}
+}
+}
+try {
+fetchOtherSecrets();
+
+} catch (error) {
+  logInfo("Issue while executing"+ error)
+}
+
+
