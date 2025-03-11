@@ -1,8 +1,0 @@
-- name: Backup of config files with .nomac extension
-  shell: "cp /usr/local/neolane/nl{{ nlversion }}/conf/config-{{ item }}.xml /usr/local/neolane/nl{{ nlversion }}/conf/config-{{ item }}.xml.nomac"
-  with_items:
-    - "{{ instance_name }}"
-    - default
-    
-- name: Backup serverconf files with .nomac extension
-  shell: "cp /usr/local/neolane/nl{{ nlversion }}/conf/serverConf.xml /usr/local/neolane/nl{{ nlversion }}/conf/serverConf.xml.nomac"
