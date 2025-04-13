@@ -1,0 +1,85 @@
+What is Cloud Computing ? 
+Cloud computing is like using services over the internet instead of on your computer. Imagine having your files, software, and even processing power available online, so you can access them from any device, anywhere, without needing a powerful computer or lots of storage. It's like renting a supercomputer or storage space as needed, instead of buying and maintaining your own.
+
+
+Cloud providers
+
+Here are some of the major cloud providers:
+
+1. **Amazon Web Services (AWS)**
+2. **Microsoft Azure**
+3. **Google Cloud Platform (GCP)**
+4. **IBM Cloud**
+5. **Oracle Cloud**
+6. **Alibaba Cloud**
+7. **Salesforce**
+8. **SAP Cloud Platform**
+9. **Tencent Cloud**
+10. **Rackspace**
+
+Types of Cloud
+
+There are four main types of cloud computing:
+
+1. **Public Cloud:** Services are delivered over the public internet and shared across multiple organizations. Examples include AWS, Microsoft Azure, and Google Cloud Platform.
+
+2. **Private Cloud:** Services are maintained on a private network and used by a single organization. It offers more control and security compared to public clouds.
+
+3. **Hybrid Cloud:** A combination of public and private clouds, allowing data and applications to be shared between them. It provides greater flexibility and more deployment options.
+
+4. **Community Cloud:** A cloud infrastructure shared by several organizations with common concerns, such as security, compliance, or jurisdiction. It can be managed internally or by a third party.
+
+
+AWS Services
+
+There are 200 and more services in Aws but their main services you have to learn are :
+1- Compute
+2- Storage
+3- Networking
+4- Database
+
+Ec2 --> S3 bucket --> VPC --> RDS 
+
+Other services we are learning for interview purpose 
+
+1- IAM user
+2- AWS lambda
+3- API gateway
+4- Cloud watch
+
+Ec2 (Elastic Cloud Compute)
+
+### What is Amazon EC2?
+
+Amazon EC2 (Elastic Compute Cloud) is a web service that provides resizable compute capacity in the cloud. It allows you to rent virtual servers, known as instances, to run applications and workloads. You can quickly scale up or down, depending on your needs, without investing in physical hardware.
+
+### Advantages of Amazon EC2
+
+1. **Scalability:**
+   - You can easily adjust the number of instances to match your current workload, scaling up for high-demand periods and scaling down when demand decreases.
+
+2. **Cost-Effective:**
+   - Pay only for what you use. You can choose between different pricing options, such as on-demand, reserved instances, and spot instances, to optimize costs.
+
+3. **Flexibility:**
+   - A wide range of instance types and configurations allows you to select the right compute power, memory, and storage for your specific needs.
+
+4. **Reliability:**
+   - EC2 is designed to provide high availability with options for automatic recovery and backup. AWS has multiple data centers around the world, ensuring uptime and reliability.
+
+5. **Security:**
+   - EC2 integrates with AWS security services, allowing you to control network access, encrypt data, and comply with security standards and regulations.
+
+6. **Integration:**
+   - EC2 seamlessly integrates with other AWS services, such as S3 for storage, RDS for databases, and VPC for networking, enabling you to build complex and scalable applications.
+
+7. **Speed:**
+   - You can launch and terminate instances within minutes, enabling rapid deployment and testing of applications.
+
+8. **Global Reach:**
+   - AWS provides data centers in multiple regions worldwide, allowing you to deploy instances close to your users for lower latency and better performance.
+
+9. **Management:**
+   - AWS provides tools like AWS Management Console, AWS CLI, and SDKs to manage and automate your EC2 resources easily.
+
+In summary, Amazon EC2 provides a flexible, scalable, and cost-effective way to run your applications in the cloud, with a wide range of tools and features to ensure high performance, security, and reliability.

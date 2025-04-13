@@ -1,0 +1,16 @@
+What is Amazon S3?
+Amazon S3 is a Simple Storage Service in AWS that stores files of different types like Photos, Audio, and Videos as Objects providing more scalability and security to. It allows the users to store and retrieve any amount of data at any point in time from anywhere on the web. It facilitates features such as extremely high availability, security, and simple connection to other AWS Services.
+
+What is Amazon S3 Used for?
+Amazon S3 is used for various purposes in the Cloud because of its robust features with scaling and Securing of data. It helps people with all kinds of use cases from fields such as Mobile/Web applications, Big data, Machine Learning and many more. The following are a few Wide Usage of Amazon S3 service.
+
+Data Storage: Amazon s3 acts as the best option for scaling both small and large storage applications. It helps in storing and retrieving the data-intensitive applications as per needs in ideal time.
+Backup and Recovery: Many Organizations are using Amazon S3 to backup their critical data and maintain the data durability and availability for recovery needs.
+Hosting Static Websites: Amazon S3 facilitates in storing HTML, CSS and other web content from Users/developers allowing them for hosting Static Websites benefiting with low-latency access and cost-effectiveness. To know more detailing refer this Article – How to host static websites using Amazon S3
+Data Archiving: Amazon S3 Glacier service integration helps as a cost-effective solution for long-term data storing which are less frequently accessed applications.
+Big Data Analytics: Amazon S3 is often considered as data lake because of its capacity to store large amounts of both structured and unstructured data offering seamless integration with other AWS Analytics and AWS Machine Learning Services.
+What is an Amazon S3 bucket?
+Amazon S3 bucket is a fundamental Storage Container feature in AWS S3 Service. It provides a secure and scalable repository for storing of Objects such as Text data, Images, Audio and Video files over AWS Cloud. Each S3 bucket name should be named globally unique and should be configured with ACL (Access Control List).
+
+How Does Amazon S3 works?
+Amazon S3 works on organizing the data into unique S3 Buckets, customizing the buckets with Acccess controls. It allows the users to store objects inside the S3 buckets with facilitating features like versioning and lifecycle management of data storage with scaling.

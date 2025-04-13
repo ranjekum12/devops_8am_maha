@@ -1,0 +1,57 @@
+Commands for Different type of OS
+
+Note :  Use these commands after creating EC2 instance
+
+AWS (Linux)
+
+sudo yum update
+sudo yum install httpd -y
+sudo systemctl start httpd 
+wget <template link>
+unzip <Rar file>
+cd <Folder name>
+sudo mv * /var/www/html
+
+RedHat Linux
+sudo yum update
+sudo yum install nginx -y
+sudo systemctl start nginx 
+sudo yum install wget
+wget <template link>
+sudo yum install unzip
+unzip <Rar file>
+cd <Folder name>
+sudo mv * <"use nginx host  location">
+sudo chcon -R -t httpd_sys_content_t /var/www/html
+
+Ubuntu OS
+sudo apt-get update
+sudo apt-get install nginx -y
+sudo systemctl start nginx 
+wget <template link>
+unzip <Rar file>
+cd <Folder name>
+sudo mv * /var/www/html
+ 
+SuseLinux OS
+
+sudo zypper update
+sudo zypper install nginx -y 
+wget <template link>
+unzip <Rar file>
+cd <Folder name>
+sudo mv * <nginx server host location>
+
+
+Debian OS
+sudo apt-get update
+sudo apt-get install nginx -y
+sudo systemctl start nginx 
+wget <template link>
+unzip <Rar file>
+cd <Folder name>
+sudo mv * /var/www/html
+
+Note : If you want to run these commands before launching Ec2 instance (i.e shell scripting)
+#!/bin/bash                (Write this command in First line after that write other commands)
+

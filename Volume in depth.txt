@@ -1,0 +1,55 @@
+What is Filesystem and its types ?
+
+    File System
+
+A file system organizes and manages how files are stored and accessed on a storage device.
+
+    Common Types
+
+1. **FAT32**
+   - **Use**: Older, simple.
+   - **Pros**: Compatible with many devices.
+   - **Cons**: Limited to 4 GB file size.
+
+2. **NTFS**
+   - **Use**: Windows systems.
+   - **Pros**: Handles large files, advanced features.
+   - **Cons**: Less compatible with non-Windows systems.
+
+3. **ext4**
+   - **Use**: Linux systems.
+   - **Pros**: Good performance, handles large files.
+   - **Cons**: Mostly for Linux.
+
+4. **HFS+**
+   - **Use**: Older macOS.
+   - **Pros**: Works well with macOS.
+   - **Cons**: Replaced by APFS.
+
+5. **APFS**
+   - **Use**: New macOS and iOS.
+   - **Pros**: Fast, supports encryption.
+   - **Cons**: Apple devices only.
+
+6. **exFAT**
+   - **Use**: Modern, cross-platform.
+   - **Pros**: Handles large files, compatible with many devices.
+   - **Cons**: Lacks some advanced features.
+
+What is Mount and Mount point ?
+- Mount: Connects an EBS volume to an EC2 instance so it can be used.
+
+- Mount Point: The directory on the EC2 instance where the EBS volume appears and is accessed.
+
+What is Snapshot ?
+In AWS, a snapshot is a backup of the state of an Amazon EBS (Elastic Block Store) volume at a specific point in time. It captures the data on the volume, allowing you to restore it later or create new volumes from it. 
+
+
+
+Volume Commands
+
+Step1: (Directory Creation) :> sudo mkdir /mnt/<directory-name>     
+Step2: (Create Filesystem) :> sudo mkfs -t ext4 /dev/<volume-name> 
+Step3: (Mount volume and directory) :> sudo mount /dev/<volume-name> /mnt/<directory-name>
+Step4: (Enter inside the directory) :> cd <directory-name>
+Step5: (Add data in directory) :> echo "Hello Devops Engineers" > hello.txt

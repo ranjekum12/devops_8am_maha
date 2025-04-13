@@ -1,0 +1,47 @@
+What is Web Server ?
+A web server is a system that delivers web content to users over the internet. It can be a piece of software or a physical machine that responds to requests from web browsers.
+
+Types of Web servers
+
+1- Nginx
+2- Httpd
+3- IIS
+4- Apache 
+
+
+***Command for hosting website in Ubuntu OS***
+
+sudo apt-get update
+sudo apt-get install nginx -y
+sudo systemctl status nginx
+wget <Please paste the link to the free CSS template from your browser>
+sudo ls (show list of all files and folder)
+sudo apt-get install unzip
+unzip <filename>
+cd <filename>
+sudo su
+sudo mv * /var/www/html
+
+***Command for hosting website in Amazon Linux***
+
+sudo yum update
+sudo yum install httpd -y
+sudo systemctl status httpd
+sudo systemctl start httpd
+wget <Please paste the link to the free CSS template from your browser>
+sudo ls (show list of all files and folder)
+unzip <filename>
+cd <filename>
+sudo su
+sudo mv * /var/www/html
+
+
+https://www.youtube.com/watch?v=EmtCxPCo4WY
+https://www.youtube.com/watch?v=hgLFNSelxAs
+https://www.youtube.com/watch?v=NTOcdjMs8E445'ujn /ytr/
+https://www.youtube.com/watch?v=FziEhnIpln4
+
+xzzxcvb bdq	10['
+
+
+

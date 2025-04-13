@@ -1,0 +1,26 @@
+ What is Volume ? 
+In AWS, a volume is a virtual storage disk that you can attach to your cloud servers (EC2 instances) to store data, similar to a hard drive on a physical computer.
+
+Types Of Volumes
+
+General Purpose SSD (gp3):
+
+When to Use: For most applications, including boot volumes and low-latency interactive apps, where you need a good balance of cost and performance.
+Provisioned IOPS SSD (io1):
+
+When to Use: For applications requiring very high and consistent IOPS, such as large databases or high-performance enterprise applications.
+Throughput Optimized HDD (st1):
+
+When to Use: For large, sequential data processing tasks, such as big data workloads and data warehousing, where high throughput is needed at a lower cost.
+Cold HDD (sc1):
+
+When to Use: For infrequently accessed data, like long-term archival or backups, where low cost is more important than performance.
+Magnetic (standard):
+
+When to Use: For older or infrequently accessed data that doesn’t require high performance; generally being phased out in favor of newer options.
+General Purpose SSD (gp2):
+
+When to Use: For a wide range of general-purpose workloads, like operating system drives and development/test environments, where you need balanced performance and cost.
+Provisioned IOPS SSD (io2):
+
+When to Use: For critical applications needing very high IOPS and durability, such as mission-critical databases or high-performance transaction processing.

@@ -1,0 +1,38 @@
+
+AWS Lambda Function
+
+import json
+import urllib3
+
+def lambda_handler(event, context):
+    http = urllib3.PoolManager()
+    response = http.request('GET', 'https://jsonplaceholder.typicode.com/todos/1')
+    return {
+        'statusCode': response.status,
+        'body': json.loads(response.data.decode('utf-8'))
+    }
+
+
+Explaination of every word in this function 
+
+lambda_handler Function:
+This is the entry point of the Lambda function. AWS Lambda invokes this function when triggered.
+Parameters:
+event: This parameter contains event data passed to the function.
+context: This parameter provides runtime information to the function.
+
+urllib3.PoolManager():
+Creates an instance of PoolManager from urllib3, which manages a pool of connections to a specified host for efficient reuse.
+Making the HTTP Request:
+
+http.request('GET', 'https://jsonplaceholder.typicode.com/todos/1'):
+Sends a GET request to the specified URL (https://jsonplaceholder.typicode.com/todos/1).
+This returns a urllib3.HTTPResponse object response, which contains the response data.
+Returning the Response:
+
+return { 'statusCode': response.status, 'body': json.loads(response.data.decode('utf-8')) }:
+Constructs and returns a dictionary with two keys:
+statusCode: The HTTP status code of the response.
+body: The JSON-decoded response body.
+response.status gives the HTTP status code (e.g., 200 for success).
+response.data contains the raw response data in bytes, which is decoded using response.data.decode('utf-8') and then parsed into a Python dictionary using json.loads().
